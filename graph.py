@@ -56,9 +56,12 @@ def build_graph():
     graph.add_edge("fortune_agent", END)
     return graph
 
+
 # 内存检查点用于保存每个 thread_id 的中断状态；进程重启后不会持久化。
 checkpointer = InMemorySaver()
 app = build_graph().compile(checkpointer=checkpointer)
+
+app.get_graph().draw_mermaid_png(output_file_path='./imgs/可视化图.png')
 
 
 def get_config(user_id: str) -> dict:
