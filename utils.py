@@ -2,8 +2,6 @@ from datetime import datetime
 
 from lunar_python import Solar
 
-from constant import ZODIACS
-
 
 def is_valid_date(s: str) -> bool:
     try:
@@ -11,13 +9,6 @@ def is_valid_date(s: str) -> bool:
         return True
     except ValueError:
         return False
-
-
-def get_zodiac(s: str) -> str:
-    d = datetime.strptime(s, "%Y-%m-%d")
-    """生肖：1984年是鼠年，按公历年计算"""
-    return ZODIACS[(d.year - 4) % 12]
-
 
 def get_bazi(birth_date: str, birth_time: str | None = None) -> dict:
     if birth_time:

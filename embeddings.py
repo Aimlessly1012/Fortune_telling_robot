@@ -151,14 +151,3 @@ class KnowledgeBase:
 
 
 knowledge_base = KnowledgeBase()
-
-# 兼容旧代码：如果其他模块还在 import retriever/vectorstore，也能继续使用。
-EMBEDDING_MODEL = knowledge_base.embedding_model
-embeddings = knowledge_base.embeddings
-vectorstore = knowledge_base.vectorstore
-retriever = knowledge_base.retriever
-
-
-def get_vector_count() -> int:
-    """兼容旧代码：返回当前向量数量。"""
-    return knowledge_base.count()

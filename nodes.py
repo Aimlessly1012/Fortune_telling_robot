@@ -99,11 +99,8 @@ def extract_birth_info(state: FortuneState):
     month = normalize_value(state.get("birth_month"))
     day = normalize_value(state.get("birth_day"))
     input_mode = state.get("input_mode", "")
-    date_source = state.get("birth_date_source", "")
 
-    if input_mode == "manual":
-        date_source = "manual"
-    else:
+    if input_mode != "manual":
         user_input = get_latest_user_input(state)
         if user_input:
             extracted = birth_info_extractor.invoke(
@@ -122,8 +119,6 @@ def extract_birth_info(state: FortuneState):
             year = normalize_value(extracted.birth_year) or year
             month = normalize_value(extracted.birth_month) or month
             day = normalize_value(extracted.birth_day) or day
-            if extracted.birth_year or extracted.birth_month or extracted.birth_day:
-                date_source = "chat"
 
     missing_fields = create_missing_fields(year, month, day)
     birth_date = normalize_birth_date(year, month, day)
@@ -137,7 +132,6 @@ def extract_birth_info(state: FortuneState):
         "birth_month": month,
         "birth_day": day,
         "birth_date": birth_date,
-        "birth_date_source": date_source,
         "input_mode": "",
         "missing_fields": missing_fields,
         "can_analyze": bool(birth_date),
@@ -199,7 +193,6 @@ def retrieve_knowledge(state: FortuneState):
             sources.append(source)
 
     return {
-        "rag_query": query,
         "rag_context": "\n\n".join(context_parts),
         "rag_sources": sources,
     }

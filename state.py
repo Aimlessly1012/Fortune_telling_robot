@@ -11,7 +11,6 @@ class FortuneState(MessagesState):
     birth_month: str
     birth_day: str
     birth_date: str
-    birth_date_source: str
 
     input_mode: str
     missing_fields: list
@@ -19,7 +18,6 @@ class FortuneState(MessagesState):
 
     bazi_info: dict
 
-    rag_query: str
     rag_context: str
     rag_sources: list
 
