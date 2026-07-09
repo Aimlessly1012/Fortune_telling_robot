@@ -1,3 +1,5 @@
+"""把 books 目录中的文本批量导入本地 Chroma 向量库。"""
+
 import argparse
 import sys
 from pathlib import Path
@@ -10,6 +12,7 @@ from embeddings import knowledge_base
 
 
 def main() -> None:
+    """解析导入参数并执行知识库构建。"""
     parser = argparse.ArgumentParser(description="导入本地 txt 到 Chroma 向量数据库。")
     parser.add_argument("--batch-size", type=int, default=64, help="每批写入的 chunk 数。")
     parser.add_argument(

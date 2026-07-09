@@ -1,3 +1,5 @@
+"""供工作流调用的确定性命理计算工具。"""
+
 from langchain_core.tools import tool
 
 from utils import get_bazi, is_valid_date
@@ -18,6 +20,7 @@ def calculate_bazi(birth_date: str) -> dict:
             **get_bazi(birth_date),
         }
     except Exception as error:
+        # 工具以结构化错误返回，避免单次计算异常中断整个工作流。
         return {
             "success": False,
             "error": str(error),

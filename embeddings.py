@@ -1,3 +1,5 @@
+"""本地命理知识库的加载、切分、向量化和检索封装。"""
+
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -35,6 +37,7 @@ class KnowledgeBase:
             ollama_base_url: str | None = None,
             retriever_k: int | None = None,
     ) -> None:
+        # 显式参数优先于配置对象，便于测试或脚本临时覆盖默认值。
         base_config = config or KnowledgeBaseConfig()
         self.config = KnowledgeBaseConfig(
             books_dir=books_dir or base_config.books_dir,
@@ -52,6 +55,7 @@ class KnowledgeBase:
         self.ollama_base_url = self.config.ollama_base_url
         self.retriever_k = self.config.retriever_k
 
+        # 向量写入和查询必须使用同一个 embedding 模型。
         self.embeddings = OllamaEmbeddings(
             model=self.embedding_model,
             base_url=self.ollama_base_url,
@@ -125,6 +129,7 @@ class KnowledgeBase:
         try:
             self.vectorstore.delete_collection()
         except ValueError:
+            # collection 尚不存在时也允许继续创建空库。
             pass
         self.refresh_vectorstore()
 
@@ -143,11 +148,12 @@ class KnowledgeBase:
 
         for start in range(0, len(docs), batch_size):
             end = start + batch_size
+            # 分批写入，避免一次生成全部向量造成内存和服务压力。
             self.vectorstore.add_documents(docs[start:end], ids=ids[start:end])
             print(f"已写入: {min(end, len(docs))}/{len(docs)}", flush=True)
 
         print(f"导入后数量: {self.count()}")
         return len(docs)
 
-
+# 应用进程共享同一个知识库连接，避免每个节点重复初始化 Chroma。
 knowledge_base = KnowledgeBase()

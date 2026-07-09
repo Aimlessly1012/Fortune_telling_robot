@@ -1,3 +1,5 @@
+"""命令行交互层：负责收集输入和展示结果，不承载业务判断。"""
+
 from langchain_core.messages import AIMessage
 
 from embeddings import knowledge_base
@@ -5,6 +7,7 @@ from graph import chat, resume_with_birth_info
 
 
 def read_form(action: dict) -> dict:
+    """根据 LangGraph 中断节点提供的字段定义收集用户信息。"""
     print(f"\nAI：{action['message']}")
     form_data = {}
 
@@ -26,6 +29,7 @@ def read_form(action: dict) -> dict:
 
 
 def print_result(result: dict) -> None:
+    """把图执行结果转换成适合终端阅读的文本。"""
     messages = result.get("messages", [])
     if messages and isinstance(messages[-1], AIMessage):
         print(f"\nAI：{messages[-1].content}")
@@ -46,6 +50,7 @@ def print_result(result: dict) -> None:
 
 
 def run_cli(user_id: str = "user-1") -> None:
+    """启动单用户命令行会话。"""
     knowledge_base.ensure_ready()
     print("AI：你好，有什么想聊的吗？")
     print("输入“退出”结束程序。")
@@ -59,6 +64,7 @@ def run_cli(user_id: str = "user-1") -> None:
             continue
 
         result = chat(user_id, user_input)
+        # 图可能因缺少出生信息暂停；提交表单后从同一线程继续执行。
         while result.get("__interrupt__"):
             action = result["__interrupt__"][0].value
             result = resume_with_birth_info(user_id, read_form(action))

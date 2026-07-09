@@ -1,16 +1,21 @@
+"""与模型无关的日期校验和八字计算函数。"""
+
 from datetime import datetime
 
 from lunar_python import Solar
 
 
 def is_valid_date(s: str) -> bool:
+    """检查字符串是否为真实存在的 YYYY-MM-DD 日期。"""
     try:
         datetime.strptime(s, "%Y-%m-%d")
         return True
     except ValueError:
         return False
 
+
 def get_bazi(birth_date: str, birth_time: str | None = None) -> dict:
+    """把公历出生时间转换为年、月、日、时四柱。"""
     if birth_time:
         birth_datetime = datetime.strptime(
             f"{birth_date} {birth_time}",
@@ -23,6 +28,7 @@ def get_bazi(birth_date: str, birth_time: str | None = None) -> dict:
             "%Y-%m-%d",
         ).replace(hour=12)
 
+    # lunar_python 负责公历、农历以及干支历法之间的转换。
     solar = Solar.fromDate(birth_datetime)
     lunar = solar.getLunar()
     eight_char = lunar.getEightChar()
