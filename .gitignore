@@ -1,34 +1,20 @@
-# Environment and secrets
 .env
 .env.*
 !.env.example
-.venv/
-venv/
-env/
 
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
-build/
-dist/
-wheels/
-*.egg-info/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 .coverage
 htmlcov/
 
-# IDE and local tooling
 .idea/
 .vscode/
-.jbeval/
 
-# Operating system
 .DS_Store
 Thumbs.db
 
-# Generated vector database
-chroma_db/
